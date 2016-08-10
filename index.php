@@ -35,7 +35,7 @@
         table {
             text-align:center;
         }
-        input {
+        input, button {
             padding: 5px;
             font-size:16px;
         }
@@ -92,7 +92,7 @@
     </style>
 
     <script>
-
+    /*
         function validar() {
 
             var form = document.getElementById("form");
@@ -105,16 +105,6 @@
                 return false;
 
             }
-
-
-            /*if ( form.jugador0.value=="" ||  form.jugador1.value=="" ) {
-
-                alert("Ingresa los jugadores");
-
-                return false;
-
-            } */
-
             var j1 = new Array();
             var j2 = new Array();
 
@@ -129,93 +119,84 @@
 
             return true;
         }
+        */
     </script>
 
 
 </head>
 <body>
 
-    <h1>Marcatronix 2000</h1>
+    <h1>Marcatronix 2000 - Arco y Flecha</h1>
 
-    <form id="form" name="form" action="index.php" method="post" onsubmit="return validar();">
+    <form id="form" name="form" action="index.php" method="post" >
        <input type="hidden" name="marcadores0"/>
        <input type="hidden" name="marcadores1"/>
-
-
-
         <h3>ID de Evento</h3>
         <p>
-            <input type="text" name="idEvento"/></p>
+            <input type="text" name="idEvento" value="<?php echo $_POST['idEvento'] ?>" />
+            <input type="submit" name="guardarIdEvento" value="guardar">
+        </p>
             <em>*Siempre asigne un id de evento único (sólo números)</em>
 
-        <h3>Marcador</h3>
-        <table>
-            <tr class="encabezado">
-                <td>Jugadores</td>
-                <td>Servicio</td>
-                <td>Parcial</td>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-            </tr>
-            <tr>
-                <td class="gris">
-                    <input type="text" name="jugador0"/>
-                </td>
-                <td><input id="s0" type="radio" name="servicio" value="0"></td>
-                <td><input type="text" class="numero" name="parcial0" value="0"></td>
-                <td class="gris"><input type="text" class="numero" name="set_0_0"  value="0"></td>
-                <td><input type="text" class="numero" name="set_0_1"  value="0"></td>
-                <td class="gris"><input type="text" class="numero"name="set_0_2"  value="0"></td>
-                <td><input type="text" class="numero" name="set_0_3"  value="0"></td>
-                <td class="gris"><input type="text" class="numero" name="set_0_4"  value="0"></td>
-                <td><input type="text" class="numero" name="set_0_5"  value="0"></td>
-            </tr>
-            <tr>
-                <td class="gris">
-                    <input type="text" name="jugador1"/>
-                </td>
-                <td><input id="s1" type="radio" name="servicio" value="1"></td>
-                <td><input type="text" class="numero" name="parcial1"  value="0"></td>
-                <td class="gris"><input type="text" class="numero" name="set_1_0"  value="0"></td>
-                <td><input type="text" class="numero" name="set_1_1"  value="0"></td>
-                <td class="gris"><input type="text" class="numero" name="set_1_2"  value="0"></td>
-                <td><input type="text" class="numero" name="set_1_3"  value="0"></td>
-                <td class="gris"><input type="text" class="numero" name="set_1_4"  value="0"></td>
-                <td><input type="text" class="numero" name="set_1_5"  value="0"></td>
-            </tr>
+        <?php //tablaPuntos(); ?>
 
 
-        </table>
-        <input id="guardar" type="submit" value="guardar y publicar">
-
+    <?php
+      if($_POST['idEvento'] && !file_exists("eventos/".$_POST['idEvento'].".json")):
+        crearJson($_POST['idEvento']);
+      endif;
+      if (file_exists("eventos/".$_POST['idEvento'].".json") && !$_POST['refrescarForm']):
+        formAJson($_POST['idEvento']);
+      endif;
+      if ($_POST['refrescarForm'] == "si"):
+        fornToJson($_POST['idEvento']);
+        formAJson($_POST['idEvento']);
+      endif;
+      //echo $_POST['jugador0']."asdasdasd";
+    ?>
     </form>
-    <!--
-    <script>
-        var json = function (data){
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+   <script type="text/javascript">
+      $(document).ready(function(){
+          $("#next").click(function(){
 
-            var form = document.getElementById("form");
+              $('#puntos input[type="text"]').each(function() {
+                $(this).val('0');
+              });
+              var valor = $("#next").val();
+              $("#juegoActual").val(valor);
+              //console.log(valor);
+          });
+          /*
+          $("#calcular").click(function(){
+            var idEvento = $("#calcular").val();
 
-            form.idEvento.value = data[2]["idEvento"];
+            $.ajax({
+                type: 'POST',
+                url: 'cerrar.php',
+                data: {'idArchivo' : idEvento},
+                success: function(data) {
 
-            for ( var i = 0; i<2; i++) {
+                    console.log(data);
+                    if (data.indexOf("parcial1") >= 0) {
+                        var valor = data.split(" ");
+                        $("#marcador1").val(valor[1]);
+                    } else if (data.indexOf("parcial2") >= 0) {
+                        var valor = data.split(" ");
+                        $("#marcador2").val(valor[1]);
+                    } else if (data.indexOf("empate") >= 0) {
+                        var valor = data.split(" ");
+                        $("#marcador1").val(valor[1]);
+                        $("#marcador2").val(valor[2]);
+                    }
 
-
-                form["jugador"+i].value = data[i]["nombre"];
-                form["parcial"+i].value = data[i]["parcial"];
-
-
-                for ( var j = 0; j< data[i].marcador.length; j++) {
-
-                     form["set_"+i+"_"+j].value = data[i].marcador[j];
                 }
+            });
 
-                document.getElementById("s"+i).checked = data[i]["servicio"] == true ? "checked" : false;
-            }
-        }
-    </script>
-   <script src='eventos/9999.json'></script></body>-->
+
+          });
+          */
+      });
+  </script>
+ </body>
 </html>
