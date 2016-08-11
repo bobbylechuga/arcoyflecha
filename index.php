@@ -88,7 +88,9 @@
             background-color: dodgerblue;
             border: none;
         }
-
+        #desempateDiv {
+          display: none;
+        }
     </style>
 
     <script>
@@ -155,11 +157,18 @@
       //echo $_POST['jugador0']."asdasdasd";
     ?>
     </form>
+    <div id="desempateDiv">
+      EEE
+    </div>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
    <script type="text/javascript">
       $(document).ready(function(){
+          var ultimoJuego = $("#next").val();
+          if (ultimoJuego > 5) {
+            $("#next").attr("disabled", true);
+            $("#desempateDiv").show();
+          }
           $("#next").click(function(){
-
               $('#puntos input[type="text"]').each(function() {
                 $(this).val('0');
               });
