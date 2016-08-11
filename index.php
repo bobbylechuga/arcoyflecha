@@ -128,7 +128,7 @@
 </head>
 <body>
 
-    <h1>Marcatronix 2000 - Arco y Flecha</h1>
+    <h1>Guillermo Telltronix 2000 - Arco y Flecha</h1>
 
     <form id="form" name="form" action="index.php" method="post" >
        <input type="hidden" name="marcadores0"/>
@@ -157,54 +157,61 @@
       //echo $_POST['jugador0']."asdasdasd";
     ?>
     </form>
-    <div id="desempateDiv">
-      EEE
+    <div id="desempateDiv" style="margin-top: 150px">
+      <h2>Elegir ganador por desempate:</h2>
+      <table style="width:900px;">
+        <tr>
+          <td class="gana1fondo"><button class="desempate-class" id="desempate1" type="button" value="jugador1"></button></td>
+          <td class="gana2fondo"><button class="desempate-class" id="desempate2" type="button" value="jugador2"></button></td>
+        </tr>
+      </table>
     </div>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
    <script type="text/javascript">
       $(document).ready(function(){
+
+          var jugador0 = $("[name='jugador0']").val();
+          var jugador1 = $("[name='jugador1']").val();
+
+          $("#desempate1").text(jugador0);
+          $("#desempate2").text(jugador1);
+
           var ultimoJuego = $("#next").val();
-          if (ultimoJuego > 5) {
-            $("#next").attr("disabled", true);
-            $("#desempateDiv").show();
-          }
+          var desempate = +ultimoJuego +1;
+
           $("#next").click(function(){
               $('#puntos input[type="text"]').each(function() {
                 $(this).val('0');
               });
               var valor = $("#next").val();
               $("#juegoActual").val(valor);
+              if (desempate > 6) {
+                $("#next").attr("disabled", true);
+                $("#next").text("Desempate");
+                $("#desempateDiv").show();
+                $("[name='guardarJsonBoton']").attr("disabled", true);
+                //guardarIdEvento
+              }
               //console.log(valor);
           });
-          /*
-          $("#calcular").click(function(){
-            var idEvento = $("#calcular").val();
 
+          $(".desempate-class").click(function(){
+            var idEvento = $("[name='idEvento']").val();
+            var idJugador = $(this).attr('value');
+            var idClass = $(this).attr('id');
+            $("#"+idClass).parent().css('background-color', 'blue');
             $.ajax({
                 type: 'POST',
-                url: 'cerrar.php',
-                data: {'idArchivo' : idEvento},
+                url: 'desempate.php',
+                data: {'idArchivo' : idEvento, 'idganador': idJugador,},
                 success: function(data) {
-
-                    console.log(data);
-                    if (data.indexOf("parcial1") >= 0) {
-                        var valor = data.split(" ");
-                        $("#marcador1").val(valor[1]);
-                    } else if (data.indexOf("parcial2") >= 0) {
-                        var valor = data.split(" ");
-                        $("#marcador2").val(valor[1]);
-                    } else if (data.indexOf("empate") >= 0) {
-                        var valor = data.split(" ");
-                        $("#marcador1").val(valor[1]);
-                        $("#marcador2").val(valor[2]);
-                    }
-
+                  console.log(data)
                 }
             });
 
 
           });
-          */
+
       });
   </script>
  </body>

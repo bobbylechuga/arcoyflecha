@@ -108,7 +108,7 @@
       </table>
       <div style="width:720px; margin-top: 30px;">
         <input type="hidden" name="refrescarForm" value="si">
-        <input type="submit" value="guardar y publicar"  style="float: right; clear: both;">
+        <input type="submit" name="guardarJsonBoton" value="guardar y publicar"  style="float: right; clear: both;">
       </div>
       ';
       //fornToJson($idevento);
